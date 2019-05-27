@@ -104,3 +104,5 @@ bne t1, x0, Else20
 j Exit20
 Else20: sw x10, 20(x8)
 Exit20:
+
+Exercícios feitos: 1, 2, 3, 4
