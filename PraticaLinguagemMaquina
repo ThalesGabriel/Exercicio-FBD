@@ -1,0 +1,106 @@
+# Declarando arrays e guardando no endereço x8 e x9
+li x8,0x10010000
+li x9,0x10010020
+
+# Declarando variável multiplicadora guardando e no endereço x7
+li x7, 0x0000002
+
+# Somando 0 e 1 e guardando no endereço da variável temporária t0
+addi t0, x0, 0x0000001
+# Salvando o conteúdo do endereço t0 na posição 0 da array presente no endereço x8
+sw t0, 0(x8)
+# Multiplicando o conteúdo do endereço variável multiplicadora x7 com o conteúdo do endereço t0 
+mul t1 , x7 , t0
+# Salvando o conteúdo do endereço t1 na posição 0 da array presente no endereço x9
+sw t1, 0(x9)
+
+addi t0, x0, 0x0000003	
+sw t0, 4(x8)
+mul t1 , x7 , t0
+sw t1, 4(x9)
+
+addi t0, x0, 0x0000002
+sw t0, 8(x8)
+mul t1 , x7 , t0
+sw t1, 8(x9)
+
+addi t0, x0, 0x0000001
+sw t0, 12(x8)
+mul t1 , x7 , t0
+sw t1, 12(x9)
+
+addi t0, x0, 0x0000004
+sw t0, 16(x8)
+mul t1 , x7 , t0
+sw t1, 16(x9)
+
+addi t0, x0, 0x0000005
+sw t0, 20(x8)
+mul t1 , x7 , t0
+sw t1, 20(x9)
+
+# Guardando o conteúdo do endereço 0 da array presente no endereço x9 no endereço da variável referenciada por t0
+lb t0, 0(x9)
+# Somando o conteúdo do endereço da variável x0 a o conteúdo da variável t0 e guardando no endereço referenciado por x11 
+add x11, x0, t0 
+lb t0, 0(x8)
+add x10, x0, t0
+# Função and compara 2 valores bit a bit e retorna um booleano( 0 ou 1 ) no caso como estou comparando com 1, se o resultado 
+# retornar 1 quer dizer que o numero é impar
+andi t1, t0, 0x0000001
+# Branch if not equals, se t1 que é 1 não for igual a x0 (0) então vá pra função Else0
+bne t1, x0, Else0
+# Função pra pular o Else
+j Exit0
+Else0: sw x10, 0(x8)
+Exit0:
+
+lb t0, 4(x9)
+add x11, x11, t0 
+lb t0, 4(x8)
+add x10, x10, t0 
+andi t1, t0, 0x0000001
+bne t1, x0, Else4
+j Exit4
+Else4: sw x10, 4(x8)
+Exit4:
+
+lb t0, 8(x9)
+add x11, x11, t0
+lb t0, 8(x8)
+add x10, x10, t0
+andi t1, t0, 0x0000001
+bne t1, x0, Else8
+j Exit8
+Else8: sw x10, 8(x8)
+Exit8: 
+
+lb t0, 12(x9)
+add x11, x11, t0
+lb t0, 12(x8)
+add x10, x10, t0
+andi t1, t0, 0x0000001
+bne t1, x0, Else12
+j Exit12
+Else12: sw x10, 12(x8)
+Exit12:
+
+lb t0, 16(x9)
+add x11, x11, t0
+lb t0, 16(x8)
+add x10, x10, t0
+andi t1, t0, 0x0000001
+bne t1, x0, Else16
+j Exit16
+Else16: sw x10, 12(x8)
+Exit16:
+
+lb t0, 20(x9)
+add x11, x11, t0
+lb t0, 20(x8)
+add x10, x10, t0
+andi t1, t0, 0x0000001
+bne t1, x0, Else20
+j Exit20
+Else20: sw x10, 20(x8)
+Exit20:
