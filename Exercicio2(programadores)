@@ -1,0 +1,121 @@
+create schema programadores;
+use programadores;
+
+CREATE TABLE empresas(
+	id_empresa INTEGER PRIMARY KEY,
+    nome VARCHAR(100)
+);
+
+CREATE TABLE linguagens(
+	id_linguagens INTEGER PRIMARY KEY,
+    nome VARCHAR(100)
+);
+
+CREATE TABLE programadores(
+	id_programador INTEGER PRIMARY KEY,
+    id_empresa INTEGER,
+    nome VARCHAR(100),
+    
+    CONSTRAINT programadores_id_empresa_fk FOREIGN KEY(id_empresa) REFERENCES empresas(id_empresa)
+);
+
+CREATE TABLE programadores_linguagens(
+	id_linguagens INTEGER,
+    id_programador INTEGER,
+    
+    CONSTRAINT programadores_linguagens_id_linguagens_fk FOREIGN KEY(id_linguagens) REFERENCES linguagens(id_linguagens),
+    CONSTRAINT programadores_linguagens_id_programador_fk FOREIGN KEY(id_programador) REFERENCES programadores(id_programador)
+);
+
+ALTER TABLE programadores_linguagens ADD id_programadores_linguagens INTEGER PRIMARY KEY;
+
+INSERT INTO empresas VALUES(1, "EMPRESA 1");
+INSERT INTO empresas VALUES(2, "EMPRESA 2");
+INSERT INTO empresas VALUES(3, "EMPRESA 3");
+INSERT INTO empresas VALUES(4, "EMPRESA 4");
+INSERT INTO empresas VALUES(5, "EMPRESA 5");
+
+INSERT INTO programadores VALUES(1, 1, "PAULINHA");
+INSERT INTO programadores VALUES(2, 2, "PEDRO");
+INSERT INTO programadores VALUES(3, 3, "MÁRCIA");
+INSERT INTO programadores VALUES(4, 4, "FILIPI");
+INSERT INTO programadores VALUES(5, 4, "PINTER");
+INSERT INTO programadores VALUES(6, 1, "GABRIEL");
+
+INSERT INTO linguagens VALUES(1, "ASP");
+INSERT INTO linguagens VALUES(2, "PHP");
+INSERT INTO linguagens VALUES(3, "JAVA");
+INSERT INTO linguagens VALUES(4, "RUBY");
+INSERT INTO linguagens VALUES(5, ".NET");
+INSERT INTO linguagens VALUES(6, "COBOL");
+
+INSERT INTO programadores_linguagens VALUES(1, 1, 1);
+INSERT INTO programadores_linguagens VALUES(2, 1, 2);
+INSERT INTO programadores_linguagens VALUES(3, 2, 3);
+INSERT INTO programadores_linguagens VALUES(4, 3, 4);
+INSERT INTO programadores_linguagens VALUES(5, 4, 5);
+INSERT INTO programadores_linguagens VALUES(5, 3, 6);
+
+USE programadores;
+
+/* a) Listar os nomes de todos os programadores e os nomes de suas respectivas empresas. Apresentar a
+consulta de três formas: junção na cláusula where, conexão interna (inner join) e junção natural. */
+
+SELECT p.nome, e.nome
+FROM programadores as p, empresas as e
+WHERE p.id_empresa = e.id_empresa;
+
+SELECT p.nome, e.nome
+FROM programadores as p
+INNER JOIN empresas as e USING (id_empresa);
+
+SELECT p.nome, e.nome
+FROM programadores as p
+NATURAL JOIN empresas as e;
+
+/* b) Listar os nomes dos programadores que programam em pelo menos uma linguagem cadastrada no banco,
+e saber quais são os nomes dessas linguagens. */
+
+SELECT p.nome, l.nome
+FROM linguagens as l NATURAL JOIN programadores_linguagens 
+INNER JOIN programadores as p USING (id_programador);
+
+/*
+
+c) Listar os nomes de todos os programadores e os nomes das linguagens que eles programam.
+Observação: se o programador não estiver associado a nenhuma linguagem de programação, no resultado
+da consulta deve constar null no nome da linguagem de programação.
+
+*/
+
+SELECT p.nome, l.nome
+FROM linguagens as l NATURAL JOIN
+programadores_linguagens RIGHT JOIN
+programadores as p USING (id_programador);
+
+/*
+
+d) Listar os nomes de todas as empresas e seus programadores, independente se a empresa tem ou não
+programadores.
+
+*/
+select e.nome, p.nome from empresas as e left join programadores as p using (id_empresa);
+
+/*
+e) Criar uma consulta envolvendo “União” (FULL OUTER JOIN). Explique o significado da consulta.
+Escolha livre!
+
+SIGNIFICADO: Listar os nomes de todas os programadores e todas as linguagens de programação, independente se o 
+programador tem linguagens associadas e vice-versa.
+
+*/
+
+SELECT p.nome, l.nome
+FROM linguagens as l NATURAL JOIN
+programadores_linguagens RIGHT JOIN
+programadores as p USING (id_programador)
+UNION
+SELECT p.nome, l.nome
+FROM linguagens as l LEFT JOIN
+programadores_linguagens USING (id_linguagens)
+LEFT JOIN programadores as p USING (id_programador);
